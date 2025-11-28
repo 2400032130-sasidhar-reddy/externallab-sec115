@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h3>Student Marks Table</h3>
+
+<select id="subject" onchange="filter()">
+  <option value="">All</option><option>Math</option><option>Science</option><option>English</option>
+</select>
+<input id="min" type="number" placeholder="Min" oninput="filter()">
+<input id="max" type="number" placeholder="Max" oninput="filter()">
+
+<table id="t" border="1">
+  <tr>
+    <th onclick="sortTable(0)">ID</th>
+    <th onclick="sortTable(1)">Name</th>
+    <th onclick="sortTable(2)">Subject</th>
+    <th onclick="sortTable(3)">Marks</th>
+  </tr>
+  <tr><td>1</td><td>Rahul</td><td>Math</td><td>85</td></tr>
+  <tr><td>2</td><td>Anita</td><td>Science</td><td>72</td></tr>
+  <tr><td>3</td><td>Vikram</td><td>English</td><td>90</td></tr>
+  <tr><td>4</td><td>Priya</td><td>Math</td><td>65</td></tr>
+</table>
+
+<script>
+let asc = true; // toggle sort order
+
+function sortTable(n){
+  let table = document.getElementById("t");
+  let rows = Array.from(table.rows).slice(1); // skip header
+
+  rows.sort((a,b)=>{
+    let x = a.cells[n].innerText;
+    let y = b.cells[n].innerText;
+
+    // check if numeric
+    if(!isNaN(x) && !isNaN(y)){
+      return asc ? x - y : y - x;
+    } else {
+      return asc ? x.localeCompare(y) : y.localeCompare(x);
+    }
+  });
+
+  rows.forEach(r => table.appendChild(r));
+  asc = !asc; // toggle for next click
+}
+
+function filter(){
+  let s=document.getElementById("subject").value.toLowerCase(),
+      min=+document.getElementById("min").value||0,
+      max=+document.getElementById("max").value||100;
+  [...document.getElementById("t").rows].slice(1).forEach(r=>{
+    let subj=r.cells[2].innerText.toLowerCase(),m=+r.cells[3].innerText;
+    r.style.display=( (!s||subj==s) && m>=min && m<=max )?"":"none";
+  });
+}
+</script>
+</body>
+</html>
